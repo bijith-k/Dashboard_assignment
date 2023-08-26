@@ -8,7 +8,7 @@ const SummaryPage = () => {
     <div className='max-w-screen overflow-x-hidden'>
       <Header />
       <Filter />
-      <SummaryData />
+      {/* <SummaryData /> */}
     </div>
   )
 }

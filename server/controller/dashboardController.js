@@ -1,4 +1,4 @@
-const equipmentsModel = require('../models/equipmentsDataModel')
+const equipments_data = require('../models/equipmentsDataModel')
 const weatherModel = require('../models/weatherDataModel')
 // const crypto = require('crypto')
 
@@ -55,10 +55,38 @@ const weatherModel = require('../models/weatherDataModel')
 
 const getEquipmentsData = async(req,res)=>{
   try {
-    const equipments = await equipmentsModel.find()
-    const weather = await weatherModel.find()
+    console.log(req.query)
+    // let from = 1689724800000
+    // let to = 1689811200000
+    let from
+    let to
+    if(!isNaN(req.query.from)){
+      from = new Date(Number(req.query.from))
+    }
+    if (!isNaN(req.query.to)){
+      to = new Date(Number(req.query.to))
+    }
+    let equipments
+    if ((req.query.from === "NaN") && (req.query.city === "")) {
+      equipments = await equipments_data.find({});
+    }
+
+    if (from && to && (req.query.city === "")){
+      equipments = await equipments_data.find({ Date: { $gte: from, $lt: to } })
+    }
+
+    if (from && to && req.query.city ) {
+      equipments = await equipments_data.find({ Date: { $gte: from, $lt: to } ,City:req.query.city})
+    }
+    if (req.query.city && (req.query.from === "NaN")) {
+      equipments = await equipments_data.find({City: req.query.city })
+    }
+
+    // const equipments = await equipmentsModel.find().distinct("Name")
+    res.json({ success: true, message: "Equipments data fetched successfully",equipments })
   } catch (error) {
-    
+    console.log(error)
+    res.status(400).json({ success: false, message: error.message })
   }
 }
 

@@ -30,9 +30,12 @@ const equipments_dataSchema = new mongoose.Schema({
     type: String
   },
   Date: {
-    type: Date,
+    type: Number,
   }
 })
+
+equipments_dataSchema.index({Date:1})
+equipments_dataSchema.index({City:1})
 
 
 module.exports = mongoose.model('equipments_data', equipments_dataSchema,'equipments_data')
