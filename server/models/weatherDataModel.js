@@ -23,7 +23,7 @@ const weather_dataSchema = new mongoose.Schema({
   wind_speed: {
     type: Number
   },
-  'Serial No.': {
+  SerialNo: {
     type: Number
   },
   Date: {

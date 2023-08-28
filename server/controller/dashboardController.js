@@ -1,5 +1,5 @@
 const equipments_data = require('../models/equipmentsDataModel')
-const weatherModel = require('../models/weatherDataModel')
+const weather_data = require('../models/weatherDataModel')
 // const crypto = require('crypto')
 
 // const decryptionKey = Buffer.from("b'\xe8+\xc4\xf9\xd5\x12\xda\xf4\xe5\xf7F\xd58A\xc8T)\x9a\xed\xa1I(#m\x9bZt\xf1\xd3\xe7q)'", 'hex'); // Convert key from hex to bytes
@@ -90,4 +90,18 @@ const getEquipmentsData = async(req,res)=>{
   }
 }
 
-module.exports = {getEquipmentsData}
+const getSerialNumbers = async(req,res)=> {
+  try {
+    
+    const serialNumbers = await weather_data.find({}).select("SerialNo -_id")
+    res.json({ success: true, message: "serial numbers successfully", serialNumbers })
+
+
+     
+  } catch (error) {
+    console.log(error)
+    res.status(400).json({ success: false, message: error.message })
+  }
+}
+
+module.exports = { getEquipmentsData, getSerialNumbers }

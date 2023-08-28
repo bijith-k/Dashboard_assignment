@@ -1,5 +1,4 @@
 import { Button } from '@chakra-ui/react';
-import React from 'react'
 import { Link,useLocation } from "react-router-dom";
 
 const Header = () => {

@@ -129,7 +129,7 @@ const SummaryData = ({ dayRange, clicked, selectedCity }) => {
   const fetchData = async () => {
     try {
       const { data } = await axios.get(
-        `http://localhost:4000/equipments-data?from=${unixTimestampFrom}&to=${unixTimestampTo}&city=${selectedCity}`
+        `${import.meta.env.VITE_BASE_URL}equipments-data?from=${unixTimestampFrom}&to=${unixTimestampTo}&city=${selectedCity}`
       );
 
       if (data.success) {
@@ -156,7 +156,7 @@ const SummaryData = ({ dayRange, clicked, selectedCity }) => {
 
   return (
     <div className="mt-10 w-screen flex flex-col">
-      <div className="flex flex-col md:flex-row justify-center gap-20 w-5/6  mx-auto">
+      <div className="flex flex-col md:flex-row justify-center gap-10 md:gap-20 w-5/6  mx-auto">
         <div className="bg-blue-300 h-fit md:w-1/3 rounded-2xl">
           <p className="text-center font-bold pt-3">Capacity</p>
           <p className="text-center text-5xl font-bold pt-3 pb-5">
@@ -169,14 +169,14 @@ const SummaryData = ({ dayRange, clicked, selectedCity }) => {
             {sumUnits? sumUnits.toFixed(4) : 0}
           </p>
         </div>
-        <div className="bg-blue-900 h-fit md:w-1/3 rounded-2xl">
+        <div className="bg-blue-300 h-fit md:w-1/3 rounded-2xl">
           <p className="text-center font-bold pt-3">Efficiency</p>
           <p className="text-center text-5xl font-bold pt-3 pb-5">
             {sumEfficiency? sumEfficiency.toFixed(4) : 0}
           </p>
         </div>
       </div>
-      <div className="w-full my-3 mx-1">
+      <div className="w-full my-3 h-full">
         <DataTable
           columns={columns}
           data={data}
