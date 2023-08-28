@@ -1,13 +1,14 @@
 import React from 'react'
 import Header from '../components/Header'
-import Filter from '../components/Filter'
 import FilterWeather from '../components/FilterWeather';
+import WeatherGraph from '../components/WeatherGraph';
 
 const WeatherPage = () => {
   return (
-    <div className="w-screen">
+    <div className="max-w-screen overflow-x-hidden">
       <Header />
       <FilterWeather />
+      <WeatherGraph />
     </div>
   );
 }

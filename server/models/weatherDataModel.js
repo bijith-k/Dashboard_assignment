@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 
 const weather_dataSchema = new mongoose.Schema({
   TimeStamp: {
-    type: Date
+    type: String
   },
   temp: {
     type: Number
@@ -25,9 +25,6 @@ const weather_dataSchema = new mongoose.Schema({
   },
   SerialNo: {
     type: Number
-  },
-  Date: {
-    type: Date
   }
 })
 

@@ -82,7 +82,7 @@ const getEquipmentsData = async(req,res)=>{
       equipments = await equipments_data.find({City: req.query.city })
     }
 
-    // const equipments = await equipmentsModel.find().distinct("Name")
+
     res.json({ success: true, message: "Equipments data fetched successfully",equipments })
   } catch (error) {
     console.log(error)
@@ -104,4 +104,53 @@ const getSerialNumbers = async(req,res)=> {
   }
 }
 
-module.exports = { getEquipmentsData, getSerialNumbers }
+const getTempAndHumidityData = async(req,res)=>{
+  try {
+ 
+    // const from = new Date(req.query.from?.year, req.query.from?.month - 1, req.query.from?.day);
+    // const to = new Date(req.query.to?.year, req.query.to?.month - 1, req.query.to?.day);
+    let from
+    let to
+    if(req.query.from){
+     from = `${req.query.from?.year}-${req.query.from?.month}-${req.query.from?.day}`
+    }
+    if(req.query.to){
+     to = `${req.query.to?.year}-${req.query.to?.month}-${req.query.to?.day}`
+    }
+    console.log(req.query,from ,to)
+    // let from
+    // let to
+    // if (!isNaN(req.query.from)) {
+    //   from = new Date(Number(req.query.from))
+    // }
+    // if (!isNaN(req.query.to)) {
+    //   to = new Date(Number(req.query.to))
+    // }
+    
+    let weatherData
+    console.log(req.query.serialNo !== "0" , req.query.serialNo !== "")
+    console.log(req.query.serialNo !== "0" || req.query.serialNo !== "")
+    if (!isNaN(req.query.serialNo) && req.query.serialNo !== "0" && req.query.serialNo !== "" && !from && !to) {
+      console.log("Scenario 0", parseInt(req.query.serialNo));
+      weatherData = await weather_data.find({ SerialNo: parseInt(req.query.serialNo) });
+    } else if (from && to && (req.query.serialNo == '0' || req.query.serialNo == '') ) {
+      console.log("Scenario 1", from, to);
+      weatherData = await weather_data.find({ TimeStamp: { $gte: from, $lt: to } });
+    } else if (from && to && !isNaN(req.query.serialNo) && req.query.serialNo !== '0' && req.query.serialNo !== "") {
+      console.log("Scenario 2", from, to, req.query.serialNo);
+      weatherData = await weather_data.find({ TimeStamp: { $gte: from, $lt: to }, SerialNo: req.query.serialNo });
+    } else {
+      console.log("Scenario 3");
+      // weatherData = await weather_data.find({});
+    }
+    console.log(weatherData)
+
+    res.json({ success: true, message: "Weather data fetched successfully", weatherData })
+
+  } catch (error) {
+    console.log(error)
+    res.status(400).json({ success: false, message: error.message })
+  }
+}
+
+module.exports = { getEquipmentsData, getSerialNumbers, getTempAndHumidityData }
