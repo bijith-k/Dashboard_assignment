@@ -1,10 +1,11 @@
+import { Spinner } from "@chakra-ui/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Chart from "react-apexcharts";
 
 const WeatherGraph = ({ dayRange, selectedSerialNo, clicked }) => {
-const [weatherData, setWeatherData] = useState([]);
- 
+  const [weatherData, setWeatherData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const options = {
     chart: {
@@ -63,8 +64,6 @@ const [weatherData, setWeatherData] = useState([]);
     };
   }, []);
 
- 
-
   const localFrom = dayRange?.[0];
   const localTo = dayRange?.[1];
   let from;
@@ -84,6 +83,7 @@ const [weatherData, setWeatherData] = useState([]);
   }
   const fetchData = async () => {
     try {
+      setLoading(true);
       const { data } = await axios.get(
         `${import.meta.env.VITE_BASE_URL}getTempAndHumidity`,
         {
@@ -94,10 +94,12 @@ const [weatherData, setWeatherData] = useState([]);
           },
         }
       );
-      if(data.success){
-         setWeatherData(data.weatherData)
+      if (data.success) {
+        setLoading(false);
+        setWeatherData(data.weatherData);
       }
     } catch (error) {
+      setLoading(false);
       console.log(error);
     }
   };
@@ -108,15 +110,28 @@ const [weatherData, setWeatherData] = useState([]);
 
   return (
     <div className="flex justify-center h-full mt-16">
-      <Chart
-        options={options}
-        series={series}
-        type="area"
-        width={chartWidth}
-        height={350}
-      />
+      {loading ? (
+        <div className="flex flex-col items-center gap-4 overflow-y-hidden">
+          <p className="font-semibold text-xl "> Graph is loading... </p>
+          <Spinner
+            thickness="4px"
+            speed="0.65s"
+            emptyColor="gray.200"
+            color="blue.500"
+            size="xl"
+          />
+        </div>
+      ) : (
+        <Chart
+          options={options}
+          series={series}
+          type="area"
+          width={chartWidth}
+          height={350}
+        />
+      )}
     </div>
   );
 };
 
-export default WeatherGraph
+export default WeatherGraph;

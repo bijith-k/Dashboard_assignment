@@ -1,8 +1,7 @@
-import axios from 'axios';
-import {useEffect, useState} from 'react'
+import axios from "axios";
+import { useEffect, useState } from "react";
 import DataTable, { createTheme } from "react-data-table-component";
-import { useToast } from "@chakra-ui/react";
-
+import { Spinner, useToast } from "@chakra-ui/react";
 
 createTheme(
   "solarized",
@@ -54,6 +53,8 @@ const customStyles = {
 
 const SummaryData = ({ dayRange, clicked, selectedCity }) => {
   const toast = useToast();
+  const [loading, setLoading] = useState(false);
+
   const columns = [
     {
       name: "Name",
@@ -90,12 +91,14 @@ const SummaryData = ({ dayRange, clicked, selectedCity }) => {
       selector: (row) => row.Description,
       sortable: true,
       width: "400px",
+      cell: (row) => <span>{row.Description}</span>,
     },
     {
       name: "Recommendation",
       selector: (row) => row.Recommendation,
       sortable: true,
       width: "400px",
+      cell: (row) => <span>{row.Recommendation}</span>,
     },
     {
       name: "Date",
@@ -110,47 +113,27 @@ const SummaryData = ({ dayRange, clicked, selectedCity }) => {
 
   const [data, setData] = useState([]);
 
-  // const dateString = "19/7/2023";
-  // const [day, month, year] = dateString.split("/").map(Number);
-
-  // const dateFromObject = new Date(
-  //   dayRange.from?.year,
-  //   dayRange.from?.month - 1,
-  //   dayRange.from?.day
-  // );
-  // const dateToObject = new Date(
-  //   dayRange.to?.year,
-  //   dayRange.to?.month - 1,
-  //   dayRange.to?.day
-  // );
-  // const unixTimestampFrom = dateFromObject?.getTime();
-  // const unixTimestampTo = dateToObject?.getTime();
-  // Assuming your local date is already in the correct time zone
-  const localFrom = dayRange[0];
-  const localTo = dayRange[1];
-let from;
-let to;
+  const localFrom = dayRange?.[0];
+  const localTo = dayRange?.[1];
+  let from;
+  let to;
   // Get the time zone offset in minutes
- if(localFrom&&localTo){
- const timeZoneOffset = localFrom?.getTimezoneOffset();
+  if (localFrom && localTo) {
+    const timeZoneOffset = localFrom?.getTimezoneOffset();
 
- // Adjust the local dates by subtracting the offset in minutes
- const utcFrom = new Date(localFrom?.getTime() - timeZoneOffset * 60000); // Convert offset to milliseconds
- const utcTo = new Date(localTo?.getTime() - timeZoneOffset * 60000);
+    // Adjust the local dates by subtracting the offset in minutes
+    const utcFrom = new Date(localFrom?.getTime() - timeZoneOffset * 60000); // Convert offset to milliseconds
+    const utcTo = new Date(localTo?.getTime() - timeZoneOffset * 60000);
 
- // Convert to ISO 8601 format for UTC
+    // Convert to ISO 8601 format for UTC
 
- from = utcFrom?.toISOString();
- to = utcTo?.toISOString();
- }
- 
-  
-  
-
-
+    from = utcFrom?.toISOString();
+    to = utcTo?.toISOString();
+  }
 
   const fetchData = async () => {
     try {
+      setLoading(true);
       const { data } = await axios.get(
         `${import.meta.env.VITE_BASE_URL}equipments-data`,
         {
@@ -163,9 +146,11 @@ let to;
       );
 
       if (data.success) {
+        setLoading(false);
         setData(data.equipments);
       }
     } catch (error) {
+      setLoading(false);
       toast({
         title: error.message,
         status: "error",
@@ -206,17 +191,30 @@ let to;
           </p>
         </div>
       </div>
-      <div className="w-full my-3 h-full">
-        <DataTable
-          columns={columns}
-          data={data}
-          theme="solarized"
-          customStyles={customStyles}
-          pagination
-        />
+      <div className="w-full mt-3 h-full">
+        {loading ? (
+          <div className="flex flex-col items-center gap-4 overflow-y-hidden mt-2">
+            <p className="font-semibold text-xl "> Table is loading... </p>
+            <Spinner
+              thickness="4px"
+              speed="0.65s"
+              emptyColor="gray.200"
+              color="blue.500"
+              size="xl"
+            />
+          </div>
+        ) : (
+          <DataTable
+            columns={columns}
+            data={data}
+            theme="solarized"
+            customStyles={customStyles}
+            pagination
+          />
+        )}
       </div>
     </div>
   );
 };
 
-export default SummaryData
+export default SummaryData;

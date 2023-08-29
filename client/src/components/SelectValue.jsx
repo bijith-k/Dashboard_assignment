@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 const SelectValue = ({ items, onSelect }) => {
@@ -9,7 +9,7 @@ const SelectValue = ({ items, onSelect }) => {
 
   const handleValueChange = (event) => {
     const inputValue = event.target.value;
-    console.log(inputValue);
+    
     setSelected(inputValue);
 
     // Find suggested cities based on input
@@ -25,13 +25,9 @@ const SelectValue = ({ items, onSelect }) => {
     });
     setSuggestedValues(newSuggestedValues);
   };
-  console.log(items,"vl")
-
-  console.log(suggestedValues,"sugg")
-
+   
    const handleSelect = (value) => {
      if (value === selected) {
-       // Clear the selected city and send a special value
        setSelected("");
        onSelect(""); // Send the special value to the parent component
      } else {
@@ -56,7 +52,7 @@ const SelectValue = ({ items, onSelect }) => {
         {suggestedValues.map((value, index) => (
           <li
             key={index}
-            onClick={() => handleSelect(value)} // Call handleCitySelect when suggestion is clicked
+            onClick={() => handleSelect(value)}  
             className="px-3 py-2 cursor-pointer hover:bg-gray-200"
           >
             {value}
@@ -64,7 +60,7 @@ const SelectValue = ({ items, onSelect }) => {
         ))}
         {selected && (
           <li
-            onClick={() => handleSelect(selected)} // Call handleCitySelect to clear selected city
+            onClick={() => handleSelect(selected)}  
             className="px-3 py-2 cursor-pointer hover:bg-gray-200"
           >
             Clear Selected

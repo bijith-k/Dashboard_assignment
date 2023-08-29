@@ -55,9 +55,6 @@ const weather_data = require('../models/weatherDataModel')
 
 const getEquipmentsData = async (req, res) => {
   try {
-    console.log(req.query)
-    // let from = 1689724800000
-    // let to = 1689811200000
     let from
     let to
     if (req.query.from != "") {
@@ -115,7 +112,6 @@ const getSerialNumbers = async (req, res) => {
 const getTempAndHumidityData = async (req, res) => {
   try {
      
-
     let from
     let to
     if (req.query.from != "") {
@@ -129,10 +125,8 @@ const getTempAndHumidityData = async (req, res) => {
     let weatherData
     
     if (!isNaN(req.query.serialNo) && req.query.serialNo !== "0" && req.query.serialNo !== "" && !from && !to) {
-      console.log("Scenario 0", parseInt(req.query.serialNo));
       weatherData = await weather_data.find({ SerialNo: parseInt(req.query.serialNo) });
     } else if (from && to && (req.query.serialNo == '0' || req.query.serialNo == '')) {
-      console.log("Scenario 1",);
       weatherData = await weather_data.find({
         TimeStamp: {
           $gte: from,
@@ -143,10 +137,8 @@ const getTempAndHumidityData = async (req, res) => {
     
       weatherData = await weather_data.find({ TimeStamp: { $gte: from, $lte: to }, SerialNo: req.query.serialNo });
     } else {
-      console.log("Scenario 3");
       weatherData = await weather_data.find({});
     }
-    console.log(weatherData?.length)
 
     res.json({ success: true, message: "Weather data fetched successfully", weatherData })
 
