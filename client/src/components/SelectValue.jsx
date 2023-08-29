@@ -25,6 +25,9 @@ const SelectValue = ({ items, onSelect }) => {
     });
     setSuggestedValues(newSuggestedValues);
   };
+  console.log(items,"vl")
+
+  console.log(suggestedValues,"sugg")
 
    const handleSelect = (value) => {
      if (value === selected) {

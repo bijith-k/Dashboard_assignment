@@ -5,10 +5,7 @@ import SelectValue from "./SelectValue";
 import WeatherGraph from "./WeatherGraph";
 
 const FilterWeather = () => {
-  const [dayRange, setdayRange] = useState({
-    from: null,
-    to: null,
-  });
+  const [dayRange, setdayRange] = useState([null,null]);
 
   const [clicked, setClicked] = useState(0);
 
@@ -21,14 +18,17 @@ const FilterWeather = () => {
   };
   console.log(clicked)
   const [serialNumbers, setSerialNumbers] = useState([]);
+  console.log(serialNumbers.length,"len")
   useEffect(() => {
     axios
       .get(`${import.meta.env.VITE_BASE_URL}getSerialNumbers`)
       .then((response) => {
-        const serialnums = response.data.serialNumbers.map(
-          (item) => item.SerialNo
-        );
-        setSerialNumbers(serialnums);
+        // console.log(response,"res")
+        // const serialnums = response.data.serialNumbers.map(
+        //   (item) => item.SerialNo
+        // );
+        // console.log(serialnums,"ss");
+        setSerialNumbers(response.data.serialNumbers);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -40,7 +40,7 @@ const FilterWeather = () => {
     setSerialNumber(num);
   };
 
-   
+   console.log(serialNumbers,"nums")
 
   return (
     <>

@@ -4,41 +4,7 @@ import Chart from "react-apexcharts";
 
 const WeatherGraph = ({ dayRange, selectedSerialNo, clicked }) => {
 const [weatherData, setWeatherData] = useState([]);
-
-  // console.log(dayRange);
-  // const dateFromObject = new Date(
-  //   dayRange?.from?.year,
-  //   dayRange?.from?.month - 1,
-  //   dayRange?.from?.day
-  // );
-  // const dateToObject = new Date(
-  //   dayRange?.to?.year,
-  //   dayRange?.to?.month - 1,
-  //   dayRange?.to?.day
-  // );
-  // console.log(dateFromObject);
-//   const unixTimestampFrom = dateFromObject?.getTime();
-//   const unixTimestampTo = dateToObject?.getTime();
-
-// const fromDateString = `${dayRange?.from?.year}-${String(dayRange?.from?.month).padStart(
-//   2,
-//   "0"
-// )}-${String(dayRange?.from?.day).padStart(2, "0")}T00:00:00`;
-// const toDateString = `${dayRange?.to?.year}-${String(dayRange?.to?.month).padStart(2, "0")}-${String(
-//   dayRange?.to?.day
-// ).padStart(2, "0")}T23:59:59`;
-
-// URL-encode date-time strings
-// const fromEncoded = encodeURIComponent(fromDateString);
-// const toEncoded = encodeURIComponent(toDateString);
-//  const dateObjects = weatherData?.map((data) => {
-//    const [datePart, timePart] = data.TimeStamp.split(" ");
-//    const [day, month, year] = datePart.split("-");
-//    const [hours, minutes] = timePart.split(":");
-//    return new Date(year, month - 1, day, hours, minutes).toDateString();
-//  });
-
-//  console.log(dateObjects)
+ 
 
   const options = {
     chart: {
@@ -97,16 +63,33 @@ const [weatherData, setWeatherData] = useState([]);
     };
   }, []);
 
-  const [temperature, setTemperature] = useState([]);
-  const [humidity, setHumidity] = useState([]);
+ 
+
+  const localFrom = dayRange?.[0];
+  const localTo = dayRange?.[1];
+  let from;
+  let to;
+  // Get the time zone offset in minutes
+  if (localFrom && localTo) {
+    const timeZoneOffset = localFrom?.getTimezoneOffset();
+
+    // Adjust the local dates by subtracting the offset in minutes
+    const utcFrom = new Date(localFrom?.getTime() - timeZoneOffset * 60000); // Convert offset to milliseconds
+    const utcTo = new Date(localTo?.getTime() - timeZoneOffset * 60000);
+
+    // Convert to ISO 8601 format for UTC
+
+    from = utcFrom?.toISOString();
+    to = utcTo?.toISOString();
+  }
   const fetchData = async () => {
     try {
       const { data } = await axios.get(
         `${import.meta.env.VITE_BASE_URL}getTempAndHumidity`,
         {
           params: {
-            from: dayRange?.from,
-            to: dayRange?.to,
+            from,
+            to,
             serialNo: selectedSerialNo,
           },
         }

@@ -110,26 +110,56 @@ const SummaryData = ({ dayRange, clicked, selectedCity }) => {
 
   const [data, setData] = useState([]);
 
-  const dateString = "19/7/2023";
-  const [day, month, year] = dateString.split("/").map(Number);
+  // const dateString = "19/7/2023";
+  // const [day, month, year] = dateString.split("/").map(Number);
 
-  const dateFromObject = new Date(
-    dayRange.from?.year,
-    dayRange.from?.month - 1,
-    dayRange.from?.day
-  );
-  const dateToObject = new Date(
-    dayRange.to?.year,
-    dayRange.to?.month - 1,
-    dayRange.to?.day
-  );
-  const unixTimestampFrom = dateFromObject?.getTime();
-  const unixTimestampTo = dateToObject?.getTime();
+  // const dateFromObject = new Date(
+  //   dayRange.from?.year,
+  //   dayRange.from?.month - 1,
+  //   dayRange.from?.day
+  // );
+  // const dateToObject = new Date(
+  //   dayRange.to?.year,
+  //   dayRange.to?.month - 1,
+  //   dayRange.to?.day
+  // );
+  // const unixTimestampFrom = dateFromObject?.getTime();
+  // const unixTimestampTo = dateToObject?.getTime();
+  // Assuming your local date is already in the correct time zone
+  const localFrom = dayRange[0];
+  const localTo = dayRange[1];
+let from;
+let to;
+  // Get the time zone offset in minutes
+ if(localFrom&&localTo){
+ const timeZoneOffset = localFrom?.getTimezoneOffset();
+
+ // Adjust the local dates by subtracting the offset in minutes
+ const utcFrom = new Date(localFrom?.getTime() - timeZoneOffset * 60000); // Convert offset to milliseconds
+ const utcTo = new Date(localTo?.getTime() - timeZoneOffset * 60000);
+
+ // Convert to ISO 8601 format for UTC
+
+ from = utcFrom?.toISOString();
+ to = utcTo?.toISOString();
+ }
+ 
+  
+  
+
+
 
   const fetchData = async () => {
     try {
       const { data } = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}equipments-data?from=${unixTimestampFrom}&to=${unixTimestampTo}&city=${selectedCity}`
+        `${import.meta.env.VITE_BASE_URL}equipments-data`,
+        {
+          params: {
+            from,
+            to,
+            city: selectedCity,
+          },
+        }
       );
 
       if (data.success) {
@@ -160,19 +190,19 @@ const SummaryData = ({ dayRange, clicked, selectedCity }) => {
         <div className="bg-blue-300 h-fit md:w-1/3 rounded-2xl">
           <p className="text-center font-bold pt-3">Capacity</p>
           <p className="text-center text-5xl font-bold pt-3 pb-5">
-            {sumCapacity ? sumCapacity : 0 }
+            {sumCapacity ? sumCapacity : 0}
           </p>
         </div>
         <div className="bg-blue-500 h-fit md:w-1/3 rounded-2xl">
           <p className="text-center font-bold pt-3">Units</p>
           <p className="text-center text-5xl font-bold pt-3 pb-5">
-            {sumUnits? sumUnits.toFixed(4) : 0}
+            {sumUnits ? sumUnits.toFixed(4) : 0}
           </p>
         </div>
         <div className="bg-blue-300 h-fit md:w-1/3 rounded-2xl">
           <p className="text-center font-bold pt-3">Efficiency</p>
           <p className="text-center text-5xl font-bold pt-3 pb-5">
-            {sumEfficiency? sumEfficiency.toFixed(4) : 0}
+            {sumEfficiency ? sumEfficiency.toFixed(4) : 0}
           </p>
         </div>
       </div>

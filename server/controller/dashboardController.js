@@ -60,25 +60,26 @@ const getEquipmentsData = async (req, res) => {
     // let to = 1689811200000
     let from
     let to
-    if (!isNaN(req.query.from)) {
-      from = new Date(Number(req.query.from))
+    if (req.query.from != "") {
+      from = Date.parse(req.query.from)
     }
-    if (!isNaN(req.query.to)) {
-      to = new Date(Number(req.query.to))
+    if (req.query.to !="") {
+      to = Date.parse(req.query.to)
     }
+    console.log(from,to)
     let equipments
-    if ((req.query.from === "NaN") && (req.query.city === "")) {
+    if (isNaN(from) && (req.query.city === "")) {
       equipments = await equipments_data.find({});
     }
 
     if (from && to && (req.query.city === "")) {
-      equipments = await equipments_data.find({ Date: { $gte: from, $lt: to } })
+      equipments = await equipments_data.find({ Date: { $gte: from, $lte: to } })
     }
 
     if (from && to && req.query.city) {
-      equipments = await equipments_data.find({ Date: { $gte: from, $lt: to }, City: req.query.city })
+      equipments = await equipments_data.find({ Date: { $gte: from, $lte: to }, City: req.query.city })
     }
-    if (req.query.city && (req.query.from === "NaN")) {
+    if (req.query.city && isNaN(from)) {
       equipments = await equipments_data.find({ City: req.query.city })
     }
 
@@ -90,14 +91,21 @@ const getEquipmentsData = async (req, res) => {
   }
 }
 
+const getCities = async (req, res) => {
+  try {
+    const cities = await equipments_data.find({}).select("City -_id").distinct('City')
+    res.json({ success: true, message: "cities fetched successfully", cities })
+  } catch (error) {
+    console.log(error)
+    res.status(400).json({ success: false, message: error.message })
+  }
+}
+
+
 const getSerialNumbers = async (req, res) => {
   try {
-
-    const serialNumbers = await weather_data.find({}).select("SerialNo -_id")
-    res.json({ success: true, message: "serial numbers successfully", serialNumbers })
-
-
-
+    const serialNumbers = await weather_data.find({}).select("SerialNo -_id").distinct('SerialNo')
+    res.json({ success: true, message: "serial numbers fetched successfully", serialNumbers })
   } catch (error) {
     console.log(error)
     res.status(400).json({ success: false, message: error.message })
@@ -106,7 +114,7 @@ const getSerialNumbers = async (req, res) => {
 
 const getTempAndHumidityData = async (req, res) => {
   try {
-    //  console.log(req.query)
+     console.log(req.query)
     // const from = new Date(req.query.from?.year, req.query.from?.month - 1, req.query.from?.day);
     // const to = new Date(req.query.to?.year, req.query.to?.month - 1, req.query.to?.day);
     // function formatDate(date) {
@@ -116,31 +124,40 @@ const getTempAndHumidityData = async (req, res) => {
     //   return formattedDate;
     // }
 
-    let fromISODate;
-    let toISODate;
+    // let fromISODate;
+    // let toISODate;
 
-    if (req.query.from) {
-      // from = new Date(formatDate(req.query.from) + " 00:00") ;
-      fromISODate = new Date(
-        Date.UTC(
-          parseInt(req.query.from?.year, 10),
-          parseInt(req.query.from?.month, 10) - 1,
-          parseInt(req.query.from?.day, 10)
-        )
-      ).toISOString();
+    // if (req.query.from) {
+    //   // from = new Date(formatDate(req.query.from) + " 00:00") ;
+    //   fromISODate = new Date(
+    //     Date.UTC(
+    //       parseInt(req.query.from?.year, 10),
+    //       parseInt(req.query.from?.month, 10) - 1,
+    //       parseInt(req.query.from?.day, 10)
+    //     )
+    //   ).toISOString();
+    // }
+
+    // if (req.query.to) {
+    //   // to = new Date(formatDate(req.query.to) + " 23:59") ;
+    //   // to = new Date(formatDate(req.query.from) + " 23:59");
+    //   toISODate = new Date(
+    //     Date.UTC(
+    //       parseInt(req.query.to?.year, 10),
+    //       parseInt(req.query.to?.month, 10) - 1,
+    //       parseInt(req.query.to?.day, 10)
+    //     )
+    //   ).toISOString();
+
+    // }
+
+    let from
+    let to
+    if (req.query.from != "") {
+      from = req.query.from
     }
-
-    if (req.query.to) {
-      // to = new Date(formatDate(req.query.to) + " 23:59") ;
-      // to = new Date(formatDate(req.query.from) + " 23:59");
-      toISODate = new Date(
-        Date.UTC(
-          parseInt(req.query.to?.year, 10),
-          parseInt(req.query.to?.month, 10) - 1,
-          parseInt(req.query.to?.day, 10)
-        )
-      ).toISOString();
-
+    if (req.query.to != "") {
+      to = req.query.to
     }
 
     // const fromDate = new Date(`${req.query.from.year}-${req.query.from.month}-${req.query.from.day}`);
@@ -184,28 +201,28 @@ const getTempAndHumidityData = async (req, res) => {
     // if (!isNaN(req.query.to)) {
     //   to = new Date(Number(req.query.to))
     // }
-    console.log(fromISODate, toISODate)
+    // console.log(fromISODate, toISODate)
 
     let weatherData
-    console.log(req.query.serialNo !== "0", req.query.serialNo !== "")
-    console.log(req.query.serialNo !== "0" || req.query.serialNo !== "")
+    // console.log(req.query.serialNo !== "0", req.query.serialNo !== "")
+    // console.log(req.query.serialNo !== "0" || req.query.serialNo !== "")
     if (!isNaN(req.query.serialNo) && req.query.serialNo !== "0" && req.query.serialNo !== "" && !fromISODate && !toISODate) {
       console.log("Scenario 0", parseInt(req.query.serialNo));
       weatherData = await weather_data.find({ SerialNo: parseInt(req.query.serialNo) });
-    } else if (fromISODate && toISODate && (req.query.serialNo == '0' || req.query.serialNo == '')) {
+    } else if (from && to && (req.query.serialNo == '0' || req.query.serialNo == '')) {
       console.log("Scenario 1",);
       weatherData = await weather_data.find({
         TimeStamp: {
-          $gte: fromISODate,
-          $lte: toISODate
+          $gte: from,
+          $lte: to
         }
       });
-    } else if (fromISODate && toISODate && !isNaN(req.query.serialNo) && req.query.serialNo !== '0' && req.query.serialNo !== "") {
+    } else if (from && to && !isNaN(req.query.serialNo) && req.query.serialNo !== '0' && req.query.serialNo !== "") {
       // console.log("Scenario 2", from, to, req.query.serialNo);
-      weatherData = await weather_data.find({ TimeStamp: { $gte: fromISODate, $lte: toISODate }, SerialNo: req.query.serialNo });
+      weatherData = await weather_data.find({ TimeStamp: { $gte: from, $lte: to }, SerialNo: req.query.serialNo });
     } else {
       console.log("Scenario 3");
-      weatherData = await weather_data.find({});
+      // weatherData = await weather_data.find({});
     }
     console.log(weatherData?.length)
 
@@ -217,4 +234,4 @@ const getTempAndHumidityData = async (req, res) => {
   }
 }
 
-module.exports = { getEquipmentsData, getSerialNumbers, getTempAndHumidityData }
+module.exports = { getEquipmentsData, getSerialNumbers, getTempAndHumidityData, getCities }

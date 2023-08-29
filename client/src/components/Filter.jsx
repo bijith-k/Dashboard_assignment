@@ -8,20 +8,15 @@ import SelectDates from "./SelectDates";
 import SelectValue from "./SelectValue";
 
 const Filter = () => {
-  const [dayRange, setdayRange] = useState({
-    from: null,
-    to: null,
-  });
+  const [dayRange, setdayRange] = useState([null, null]);
 
   const [clicked, setClicked] = useState(0);
   const [cities, setCities] = useState([]);
   useEffect(() => {
     axios
-      .post("https://countriesnow.space/api/v0.1/countries/cities", {
-        country: "india",
-      })
+      .get(`${import.meta.env.VITE_BASE_URL}getCities`)
       .then((response) => {
-        const citiesData = response.data.data;
+        const citiesData = response.data.cities;
         setCities(citiesData);
       })
       .catch((error) => {
@@ -45,7 +40,7 @@ const Filter = () => {
   return (
     <>
       <div className="flex flex-col md:flex-row justify-center gap-6 md:gap-16 mt-10 mx-2 relative z-30">
-        <div className="w-full md:w-1/3 bg-amber-300 min-h-1/3 p-5  rounded-lg ">
+        <div className="w-full md:w-1/3 bg-amber-300 h-1/3 p-5  rounded-lg ">
           <SelectDates
             onClick={handleClick}
             //  showCalendar={showCalendar}
