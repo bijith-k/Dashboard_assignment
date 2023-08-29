@@ -114,42 +114,7 @@ const getSerialNumbers = async (req, res) => {
 
 const getTempAndHumidityData = async (req, res) => {
   try {
-     console.log(req.query)
-    // const from = new Date(req.query.from?.year, req.query.from?.month - 1, req.query.from?.day);
-    // const to = new Date(req.query.to?.year, req.query.to?.month - 1, req.query.to?.day);
-    // function formatDate(date) {
-    //   const day = date.day < 10 ? `0${date.day}` : date.day;
-    //   const month = date.month < 10 ? `0${date.month}` : date.month;
-    //   const formattedDate = `${day}-${month}-${date.year}`;
-    //   return formattedDate;
-    // }
-
-    // let fromISODate;
-    // let toISODate;
-
-    // if (req.query.from) {
-    //   // from = new Date(formatDate(req.query.from) + " 00:00") ;
-    //   fromISODate = new Date(
-    //     Date.UTC(
-    //       parseInt(req.query.from?.year, 10),
-    //       parseInt(req.query.from?.month, 10) - 1,
-    //       parseInt(req.query.from?.day, 10)
-    //     )
-    //   ).toISOString();
-    // }
-
-    // if (req.query.to) {
-    //   // to = new Date(formatDate(req.query.to) + " 23:59") ;
-    //   // to = new Date(formatDate(req.query.from) + " 23:59");
-    //   toISODate = new Date(
-    //     Date.UTC(
-    //       parseInt(req.query.to?.year, 10),
-    //       parseInt(req.query.to?.month, 10) - 1,
-    //       parseInt(req.query.to?.day, 10)
-    //     )
-    //   ).toISOString();
-
-    // }
+     
 
     let from
     let to
@@ -159,54 +124,11 @@ const getTempAndHumidityData = async (req, res) => {
     if (req.query.to != "") {
       to = req.query.to
     }
-
-    // const fromDate = new Date(`${req.query.from.year}-${req.query.from.month}-${req.query.from.day}`);
-    // const toDate = new Date(`${req.query.to.year}-${req.query.to.month}-${req.query.to.day}`);
-    // const fromYear = req.query.from.year;
-    // const fromMonth = req.query.from.month;
-    // const fromDay = req.query.from.day;
-
-    // const toYear = req.query.to.year;
-    // const toMonth = req.query.to.month;
-    // const toDay = req.query.to.day;
-
-    // const fromDate = new Date(
-    //   Date.UTC(
-    //     parseInt(fromYear),
-    //     parseInt(fromMonth), // JavaScript months are 0-based
-    //     parseInt(fromDay),
-    //     // 0, 0, 0 // Set hours, minutes, and seconds to 0
-    //   )
-    // );
-
-    // const toDate = new Date(
-    //   Date.UTC(
-    //     parseInt(toYear),
-    //     parseInt(toMonth),
-    //     parseInt(toDay),
-    //     // 23, 59, 59 // Set hours, minutes, and seconds to the end of the day
-    //   )
-    // );
-
-
-
-
-
-    // console.log(req.query,from ,to)
-    // let from
-    // let to
-    // if (!isNaN(req.query.from)) {
-    //   from = new Date(Number(req.query.from))
-    // }
-    // if (!isNaN(req.query.to)) {
-    //   to = new Date(Number(req.query.to))
-    // }
-    // console.log(fromISODate, toISODate)
+ 
 
     let weatherData
-    // console.log(req.query.serialNo !== "0", req.query.serialNo !== "")
-    // console.log(req.query.serialNo !== "0" || req.query.serialNo !== "")
-    if (!isNaN(req.query.serialNo) && req.query.serialNo !== "0" && req.query.serialNo !== "" && !fromISODate && !toISODate) {
+    
+    if (!isNaN(req.query.serialNo) && req.query.serialNo !== "0" && req.query.serialNo !== "" && !from && !to) {
       console.log("Scenario 0", parseInt(req.query.serialNo));
       weatherData = await weather_data.find({ SerialNo: parseInt(req.query.serialNo) });
     } else if (from && to && (req.query.serialNo == '0' || req.query.serialNo == '')) {
