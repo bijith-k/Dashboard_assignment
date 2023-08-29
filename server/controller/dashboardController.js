@@ -218,11 +218,11 @@ const getTempAndHumidityData = async (req, res) => {
         }
       });
     } else if (from && to && !isNaN(req.query.serialNo) && req.query.serialNo !== '0' && req.query.serialNo !== "") {
-      // console.log("Scenario 2", from, to, req.query.serialNo);
+    
       weatherData = await weather_data.find({ TimeStamp: { $gte: from, $lte: to }, SerialNo: req.query.serialNo });
     } else {
       console.log("Scenario 3");
-      // weatherData = await weather_data.find({});
+      weatherData = await weather_data.find({});
     }
     console.log(weatherData?.length)
 
