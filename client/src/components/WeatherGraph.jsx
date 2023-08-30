@@ -151,56 +151,59 @@ const WeatherGraph = ({ dayRange, selectedSerialNo, clicked }) => {
         </div>
       ) : (
         <div width="100%" height="100%">
-        <AreaChart
-          width={700}
-          height={400}
-          data={weatherData}
-          margin={{
-            top: 10,
-            right: 30,
-            left: 0,
-            bottom: 0,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="TimeStamp" tick={<CustomizedAxisTick />} />
-          <YAxis />
-          <Tooltip />
-          {humidity && (
-            <Area
-              type="monotone"
-              dataKey="humidity"
-              stackId="1"
-              stroke="#8884d8"
-              fill="#8884d8"
-            />
-          )}
-          {temp && (
-            <Area
-              type="monotone"
-              dataKey="temp"
-              stackId="1"
-              stroke="#82ca9d"
-              fill="#82ca9d"
-            />
-          )}
-        </AreaChart>
-        <div className="flex justify-center gap-5 pb-10 pt-4">
-          <button
-            className="bg-green-500 p-2 text-white rounded-md"
-            onClick={() => setTemp(!temp)}
+          <AreaChart
+            width={700}
+            height={400}
+            data={weatherData}
+            margin={{
+              top: 10,
+              right: 30,
+              left: 0,
+              bottom: 0,
+            }}
           >
-            temp
-          </button>
-          <button
-            className="bg-blue-500 p-2 text-white rounded-md"
-            onClick={() => setHumidity(!humidity)}
-          >
-            humidity
-          </button>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="TimeStamp" tick={<CustomizedAxisTick />} />
+            <YAxis />
+            <Tooltip />
+            {humidity && (
+              <Area
+                type="monotone"
+                dataKey="humidity"
+                stackId="1"
+                stroke="#8884d8"
+                fill="#8884d8"
+              />
+            )}
+            {temp && (
+              <Area
+                type="monotone"
+                dataKey="temp"
+                stackId="1"
+                stroke="#82ca9d"
+                fill="#82ca9d"
+              />
+            )}
+          </AreaChart>
+          <div className="flex justify-center gap-5 pb-10 pt-4">
+            <button
+              className={`bg-green-500 p-2 text-white rounded-md ${
+                temp ? 'opacity-100' : 'opacity-70'
+              }`}
+              onClick={() => setTemp(!temp)}
+            >
+              temp
+            </button>
+            <button
+              className={`bg-blue-500 p-2 text-white rounded-md ${
+                humidity ? "opacity-100" : "opacity-70"
+              }`}
+              onClick={() => setHumidity(!humidity)}
+            >
+              humidity
+            </button>
+          </div>
         </div>
-      </div>
-        
       )}
     </div>
   );
