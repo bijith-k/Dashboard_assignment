@@ -52,7 +52,7 @@ const getEquipmentsData = async (req, res) => {
     
     let equipments
     if (isNaN(from) && (req.query.city === "")) {
-      equipments = await equipments_data.find({});
+      equipments = await equipments_data.find({}).limit(300);
     }
 
     if (from && to && (req.query.city === "")) {
@@ -123,7 +123,7 @@ const getTempAndHumidityData = async (req, res) => {
     
       weatherData = await weather_data.find({ TimeStamp: { $gte: from, $lte: to }, SerialNo: req.query.serialNo });
     } else {
-      weatherData = await weather_data.find({});
+      weatherData = await weather_data.find({}).limit(1000) 
     }
 
     res.json({ success: true, message: "Weather data fetched successfully", weatherData })
