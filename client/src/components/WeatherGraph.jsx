@@ -152,7 +152,7 @@ const WeatherGraph = ({ dayRange, selectedSerialNo, clicked }) => {
       ) : (
         <div width="100%" height="100%">
           <AreaChart
-            width={700}
+            width={chartWidth}
             height={400}
             data={weatherData}
             margin={{
@@ -188,7 +188,7 @@ const WeatherGraph = ({ dayRange, selectedSerialNo, clicked }) => {
           <div className="flex justify-center gap-5 pb-10 pt-4">
             <button
               className={`bg-green-500 p-2 text-white rounded-md ${
-                temp ? 'opacity-100' : 'opacity-70'
+                temp ? "opacity-100" : "opacity-70"
               }`}
               onClick={() => setTemp(!temp)}
             >
