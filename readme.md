@@ -1,7 +1,7 @@
 
 # Dashboard
 
-Dashboard showing summary data and weather analysis
+Dashboard showing summary data and weather analysis.
 
 
 ## Installation
